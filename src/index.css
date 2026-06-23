@@ -1,0 +1,87 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Plus Jakarta Sans", "Inter", ui-sans-serif, sans-serif;
+
+  /* Brand gold/bronze — sampled from the Premium Puppy logo */
+  --color-gold-50: #fbf7ec;
+  --color-gold-100: #f6eccd;
+  --color-gold-200: #eed89b;
+  --color-gold-300: #e3c05e;
+  --color-gold-400: #d4a52e;
+  --color-gold-500: #bc8a1c;
+  --color-gold-600: #9c6e12;
+  --color-gold-700: #7d5408;
+  --color-gold-800: #65440a;
+  --color-gold-900: #523809;
+  --color-gold-950: #2e1f05;
+
+  --animate-float: float 7s ease-in-out infinite;
+  --animate-float-slow: float 11s ease-in-out infinite;
+  --animate-pulse-ring: pulse-ring 2.2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  --animate-marquee: marquee 80s linear infinite;
+}
+
+@keyframes marquee {
+  to { transform: translateX(-50%); }
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-18px); }
+}
+
+@keyframes pulse-ring {
+  0% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.5); }
+  70% { box-shadow: 0 0 0 14px rgba(34, 197, 94, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0); }
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+  body {
+    font-family: var(--font-sans);
+    color: #1e293b;
+    background-color: #fffcf5;
+  }
+  h1, h2, h3, h4 {
+    font-family: var(--font-display);
+    letter-spacing: -0.02em;
+  }
+  ::selection {
+    background: #eed89b;
+    color: #523809;
+  }
+}
+
+/* Decorative texture backgrounds (add depth without clutter) */
+.bg-dots {
+  background-image: radial-gradient(rgba(188, 138, 28, 0.13) 1.2px, transparent 1.2px);
+  background-size: 22px 22px;
+}
+.bg-dots-light {
+  background-image: radial-gradient(rgba(255, 255, 255, 0.07) 1.3px, transparent 1.3px);
+  background-size: 24px 24px;
+}
+/* Thin gradient accent bar for cards */
+.accent-top::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 4px;
+  background: linear-gradient(to right, #d4a52e, #9c6e12);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+.accent-top:hover::before {
+  opacity: 1;
+}
+
+/* Subtle custom scrollbar */
+::-webkit-scrollbar { width: 10px; }
+::-webkit-scrollbar-track { background: #fbf7ec; }
+::-webkit-scrollbar-thumb { background: #e3c05e; border-radius: 9999px; }
+::-webkit-scrollbar-thumb:hover { background: #d4a52e; }
