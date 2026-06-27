@@ -27,33 +27,48 @@ const trust = [
 
 function buildContent(loc) {
   const n = loc.name
-  const wide = loc.type === 'City' ? 'West Bengal' : 'Kolkata'
+  const wide = loc.type === 'City' ? 'across West Bengal' : 'across Kolkata'
+  const lm = loc.landmarks || []
+  const lmList = lm.slice(0, 3).join(', ')
+  const isCity = loc.type === 'City'
 
-  const intro = `Looking to buy a healthy puppy in ${n}? Premium Puppy brings vaccinated, ethically-bred puppies to ${n} and across ${wide} — with the best prices, verified breeders and convenient doorstep delivery.`
+  const intro = `${loc.intro} Premium Puppy brings vaccinated, ethically-bred puppies to ${n} — ${loc.angle} — with the best prices, verified breeders and ${loc.deliveryNote}.`
 
   const sections = [
     {
       heading: `Buy a Healthy Puppy in ${n}`,
       body: [
-        `Whether you live in ${n} or a nearby neighbourhood, Premium Puppy makes it simple to find your perfect companion. We offer 24 popular breeds — each vaccinated and health-screened — with transparent pricing and friendly guidance to help you choose the right dog for your home.`,
+        `${loc.intro} Whether you’re near ${lm[0] || n} or anywhere else in ${n} (${loc.district}), Premium Puppy makes it simple to welcome a healthy puppy into your home.`,
+        `We offer 24 popular breeds — each vaccinated and health-screened from a verified breeder — with transparent pricing and friendly guidance to help ${n} families choose the right dog.`,
       ],
+    },
+    {
+      heading: `Areas We Cover in ${n}`,
+      body: [
+        `Our ${loc.deliveryNote} reaches ${n} and the neighbourhoods around it. Popular delivery spots include ${lmList}${lm.length > 3 ? ' and more' : ''} — just tell us where you are and we’ll bring your puppy to your door.`,
+      ],
+      chips: lm,
     },
     {
       heading: `Popular Dog Breeds in ${n}`,
       body: [
-        `Families in ${n} love friendly breeds like the Labrador Retriever and Golden Retriever, compact companions such as the Pomeranian and Shih Tzu, and loyal guardians like the German Shepherd. Browse all 24 breeds with prices to find the one that fits your lifestyle.`,
+        isCity
+          ? `${n} families often choose sturdy, adaptable breeds — friendly Labradors and Golden Retrievers, easy-care Pugs and Pomeranians, and protective German Shepherds. Browse all 24 breeds with prices to find your match.`
+          : `In ${n}, apartment-friendly companions like the Pomeranian, Shih Tzu and Pug are favourites, alongside family-loving Labradors and Golden Retrievers. Browse all 24 breeds with prices to find the right fit for your home.`,
       ],
     },
     {
       heading: `Puppy Prices in ${n}`,
       body: [
-        `Puppy prices in ${n} are the same transparent rates we offer across the region — for example, Labrador puppies start around ₹12,000, with other breeds priced according to age and lineage. Contact us on WhatsApp or call ${PHONE} for the latest prices and availability in ${n}.`,
+        `Puppy prices in ${n} are the same transparent rates we offer everywhere — Labrador puppies start around ₹12,000, with other breeds priced by age, lineage and coat. Call ${PHONE} or message us on WhatsApp for the latest prices and availability in ${n}.`,
       ],
     },
     {
       heading: `Puppy Delivery in ${n}`,
       body: [
-        `We provide safe doorstep delivery to ${n} and surrounding areas, with cash on delivery available for your peace of mind. Your vaccinated puppy arrives healthy, happy and ready to become part of your family.`,
+        isCity
+          ? `${n} is a little further from our Kolkata base, so we arrange ${loc.deliveryNote} — your vaccinated puppy travels safely and arrives healthy, with cash on delivery available.`
+          : `We provide ${loc.deliveryNote}, with cash on delivery available for your peace of mind. Your vaccinated puppy arrives healthy, happy and ready to join your family.`,
       ],
     },
   ]
@@ -61,19 +76,23 @@ function buildContent(loc) {
   const faqs = [
     {
       q: `Do you deliver puppies to ${n}?`,
-      a: `Yes — we offer doorstep delivery to ${n} and nearby areas, with cash on delivery available.`,
+      a: `Yes — we provide ${loc.deliveryNote}, covering ${lmList} and the rest of ${n}, with cash on delivery available.`,
     },
     {
       q: `What is the price of a puppy in ${n}?`,
-      a: `Prices vary by breed. Labradors start around ₹12,000, while other breeds are priced by age and lineage. Call ${PHONE} or message us on WhatsApp for current prices in ${n}.`,
+      a: `Prices vary by breed — Labradors start around ₹12,000, while other breeds are priced by age and lineage. Call ${PHONE} or message us on WhatsApp for current prices in ${n}.`,
     },
     {
-      q: `Are the puppies in ${n} vaccinated?`,
-      a: `Absolutely. Every puppy is vaccinated and health-screened before delivery, and comes from a trusted, verified breeder.`,
+      q: `Are the puppies delivered in ${n} vaccinated?`,
+      a: `Yes. Every puppy is vaccinated and health-screened before it leaves for ${n}, and comes from a trusted, verified breeder.`,
     },
     {
-      q: `Which dog breeds are available in ${n}?`,
-      a: `We offer 24 breeds in ${n}, from Labradors and Golden Retrievers to Pomeranians, Shih Tzus, German Shepherds and more. See the Breeds & Prices page for the full list.`,
+      q: isCity
+        ? `How are puppies transported to ${n}?`
+        : `Which breeds suit homes in ${n}?`,
+      a: isCity
+        ? `For ${n} (${loc.district}) we use safe, arranged transport and deliver right to your door, so your puppy travels comfortably from our Kolkata base.`
+        : `Apartment-friendly breeds like the Pomeranian, Shih Tzu and Pug do well in ${n}, while families with more space love Labradors and Golden Retrievers. We’re happy to advise based on your home.`,
     },
   ]
 
@@ -143,7 +162,7 @@ export default function LocationDetail() {
       ? `Dog Sale in ${loc.name} | Buy Healthy Vaccinated Puppies — Premium Puppy`
       : 'Location Not Found — Premium Puppy',
     description: loc
-      ? `Buy healthy, vaccinated puppies in ${loc.name} at the best price. 24 breeds, verified breeders, cash on delivery and doorstep delivery in ${loc.name}. Call ${PHONE}.`
+      ? `Buy healthy, vaccinated puppies in ${loc.name} (${loc.district}). 24 breeds, verified breeders, ${loc.deliveryNote}. Serving ${(loc.landmarks || []).slice(0, 3).join(', ')}. Call ${PHONE}.`
       : undefined,
     jsonLd,
   })
@@ -235,6 +254,18 @@ export default function LocationDetail() {
                 <p key={i}>{p}</p>
               ))}
             </div>
+            {s.chips && (
+              <div className="mt-4 flex flex-wrap gap-2">
+                {s.chips.map((c) => (
+                  <span
+                    key={c}
+                    className="inline-flex items-center gap-1.5 rounded-full bg-gold-50 px-3 py-1.5 text-sm font-medium text-gold-700"
+                  >
+                    <MapPin className="h-3.5 w-3.5" /> {c}
+                  </span>
+                ))}
+              </div>
+            )}
           </Reveal>
         ))}
 

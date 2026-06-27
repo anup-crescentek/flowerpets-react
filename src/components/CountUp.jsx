@@ -4,7 +4,9 @@ import { useEffect, useRef, useState } from 'react'
 export default function CountUp({ end, suffix = '', duration = 1600, className = '' }) {
   const ref = useRef(null)
   const started = useRef(false)
-  const [val, setVal] = useState(0)
+  // Default to the final value so prerendered/no-JS HTML shows real numbers,
+  // not 0. The animation (0 → end) still runs when scrolled into view live.
+  const [val, setVal] = useState(end)
 
   useEffect(() => {
     const el = ref.current

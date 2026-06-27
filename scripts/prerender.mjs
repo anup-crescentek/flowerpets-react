@@ -100,7 +100,23 @@ async function run() {
     for (const route of routes) {
       try {
         await page.goto(`http://localhost:${PORT}${route}`, { waitUntil: 'networkidle0', timeout: 30000 })
-        await page.evaluate(() => new Promise((r) => setTimeout(r, 120)))
+        // Scroll through so IntersectionObserver content (reveal animations +
+        // count-up stats) renders into the snapshot, then let it settle.
+        await page.evaluate(async () => {
+          await new Promise((done) => {
+            let y = 0
+            const t = setInterval(() => {
+              window.scrollBy(0, 600)
+              y += 600
+              if (y >= document.body.scrollHeight + 600) {
+                clearInterval(t)
+                done()
+              }
+            }, 50)
+          })
+          window.scrollTo(0, 0)
+        })
+        await new Promise((r) => setTimeout(r, 1800))
         const html = '<!doctype html>\n' + (await page.evaluate(() => document.documentElement.outerHTML))
         const outDir = route === '/' ? dist : join(dist, route)
         await fs.mkdir(outDir, { recursive: true })

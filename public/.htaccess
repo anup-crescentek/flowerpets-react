@@ -6,6 +6,12 @@ RewriteEngine On
 RewriteCond %{HTTPS} off
 RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
 
+# Canonicalize: strip "index.html" from the URL so there is only ONE
+# address per page (fixes "Duplicate without user-selected canonical").
+# THE_REQUEST guards against the internal SPA rewrite below, so no loop.
+RewriteCond %{THE_REQUEST} \s/+(.*/)?index\.html[\s?] [NC]
+RewriteRule ^(.*/)?index\.html$ /%1 [R=301,L]
+
 # SPA fallback: serve the app's index.html for any path that is
 # not a real file or folder, so deep links / refreshes work.
 RewriteCond %{REQUEST_FILENAME} !-f

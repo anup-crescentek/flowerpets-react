@@ -34,8 +34,10 @@ export function useSeo({ title, description, image, type = 'website', jsonLd }) 
     if (description) setMeta('name', 'twitter:description', description, store)
     if (image) setMeta('name', 'twitter:image', image, store)
 
-    // Canonical + og:url for this page
-    const canonical = SITE_URL + window.location.pathname
+    // Canonical + og:url for this page (strip any trailing index.html so the
+    // canonical never differs between "/" and "/index.html").
+    const path = window.location.pathname.replace(/\/index\.html$/, '/')
+    const canonical = SITE_URL + path
     let linkEl = document.head.querySelector('link[rel="canonical"]')
     let linkCreated = false
     const prevHref = linkEl ? linkEl.getAttribute('href') : null
